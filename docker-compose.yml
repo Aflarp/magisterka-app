@@ -1,0 +1,38 @@
+services:
+    database:
+        container_name: magisterka_app_db
+        image: mariadb:11.4
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_DATABASE: magisterka_app
+            MYSQL_USER: root
+            MYSQL_PASSWORD: root
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - magisterka-volume:/var/lib/mysql
+        networks:
+            - magisterka-network
+    php:
+        container_name: magisterka_app_php
+        build:
+            context: .
+        ports:
+            - 8000:8000
+        environment:
+            DB_CONNECTION: mysql
+            DB_HOST: magisterka_app_db
+            DB_PORT: 3306
+            DB_DATABASE: magisterka_app
+            DB_USERNAME: root
+            DB_PASSWORD: root
+        depends_on:
+            - database
+        networks:
+            - magisterka-network
+volumes:
+    magisterka-volume:
+
+networks:
+    magisterka-network:
+        driver: bridge
