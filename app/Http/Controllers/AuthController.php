@@ -29,7 +29,9 @@ class AuthController extends Controller
             'email' => $user->email]);
 
 
-        return response()->json(['message' => 'User registered successfully'], 201);
+        //return response()->json(['message' => 'User registered successfully'], 201);
+        return response()->json(['message' => 'User registered successfully', 'user' => ['name' => $user->name, 'email' => $user->email]], 201);
+
     }
 
     public function registerWithInccorectLog(Request $request)
@@ -47,7 +49,9 @@ class AuthController extends Controller
         ]);
 
         \Illuminate\Support\Facades\Log::info('User created', ["user" => $user]);
-        return response()->json(['message' => 'User registered successfully'], 201);
+        //return response()->json(['message' => 'User registered successfully'], 201);
+        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
+
     }
 
 
