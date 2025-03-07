@@ -16,7 +16,8 @@ Route::post('/loginWithManyToken', [AuthController::class, 'loginWithManyToken']
 Route::post('/registerWithCorrectLog', [AuthController::class, 'registerWithCorrectLog']);
 Route::post('/registerWithInccorectLog', [AuthController::class, 'registerWithInccorectLog']);
 
-Route::post('/loginWithRedirect', [UserController::class, 'loginWithRedirect']);
+Route::post('/IncorrectloginWithRedirect', [UserController::class, 'IncorrectloginWithRedirect']);
+Route::post('/CorrectloginWithRedirect', [UserController::class, 'CorrectloginWithRedirect']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/{id}', [UserController::class, 'view']);
     Route::put('/users/{id}', [UserController::class, 'edit']);
@@ -25,8 +26,8 @@ Route::middleware('auth:sanctum')->group(function () {
 RateLimiter::for('login', function ($request) {
     return Limit::perMinute(1)->by($request->ip());
 });
-
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 
 
-Route::get('/getUser', [UserController::class, 'getUser']);
+Route::get('/getUserWithoutSQLI', [UserController::class, 'getUserWithoutSQLI']);
+Route::get('/getUserWithSQLI', [UserController::class, 'getUserWithSQLI']);

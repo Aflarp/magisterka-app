@@ -49,9 +49,9 @@ class AuthController extends Controller
         ]);
 
         \Illuminate\Support\Facades\Log::info('User created', ["user" => $user]);
-        //return response()->json(['message' => 'User registered successfully'], 201);
         return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
-
+        
+        //return response()->json(['message' => 'User registered successfully'], 201);
     }
 
 
@@ -135,6 +135,18 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
         $token = $user->createToken('auth_token', ["*"], now()->addDays(3))->plainTextToken;
         return response()->json(['access_token' => $token, 'user_data' => $user]);
+    }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+        $token = $user->createToken('auth_token', ["*"], now()->addDays(3))->plainTextToken;
+        return response()->json(['access_token' => $token]);
     }
 
     public function logout(Request $request)
