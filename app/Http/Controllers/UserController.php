@@ -6,9 +6,13 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\TestClass; // Załaduj klasę TestClass
 
 class UserController extends Controller
 {
+
+    
+
     public function edit(Request $request, $id)
     {
         if (!$request->user()->tokenCan('edit')) {
@@ -32,44 +36,43 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function delete(Request $request, $id)
+    public function getUserWithSQLI(Request $request)
     {
-        $data = serialize([
-            'username' => 'admin',
-            'role' => 'administrator'
-        ]);
-        DB::table('users')->insert(['data' => $data]);
-
-        $input = DB::table('users')->where('id', $id)->value('data');
-        $user = unserialize($input);
-        echo "Witaj, {$user['username']}!";
-
-    }
-
-
-    public function getUser(Request $request)
-    {
-        $username = $request->input('username');
-        $query = "SELECT * FROM users WHERE username = '$username'";
+        $name = $request->input('name');
+        $query = "SELECT * FROM users WHERE name = '$name'";
         $user = DB::select($query);
 
         return response()->json($user);
     }
 
+    public function getUserWithoutSQLI(Request $request) 
+    {
+        $name = $request->input('name');
+        $user = User::where('name', $name)->first();
 
-    public function loginWithRedirect(Request $request)
+        return response()->json($user);
+    }
+
+    public function IncorrectloginWithRedirect(Request $request)
     {
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            $redirectTo = $request->input('redirect_to', '/dashboard');
-
-            if (!str_starts_with($redirectTo, '/') || str_contains($redirectTo, '://')) {
-                $redirectTo = '/dashboard';
-            }
+            $redirectTo = $request->input('redirect_to', 'https://www.ur.edu.pl/pl/strona-glowna');
 
             return redirect($redirectTo);
         }
+
+        return back()->withErrors(['email' => 'Nieprawidłowe dane logowania.']);
+    }
+
+    public function CorrectloginWithRedirect(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt($credentials)) {
+            return redirect()->intended('https://www.ur.edu.pl/pl/strona-glowna');
+        }    
 
         return back()->withErrors(['email' => 'Nieprawidłowe dane logowania.']);
     }
