@@ -71,14 +71,8 @@ class UserController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            $redirectTo = $request->input('redirect_to', 'https://www.ur.edu.pl/pl/strona-glowna');
-
-            if (!str_starts_with($redirectTo, '/') || str_contains($redirectTo, '://')) {
-                $redirectTo = 'https://www.ur.edu.pl/pl/strona-glowna';
-            }
-
-            return redirect($redirectTo);
-        }
+            return redirect()->intended('https://www.ur.edu.pl/pl/strona-glowna');
+        }    
 
         return back()->withErrors(['email' => 'Nieprawidłowe dane logowania.']);
     }
