@@ -1,0 +1,687 @@
+{
+	"info": {
+		"_postman_id": "e82fd2fb-179d-442d-b169-787be07345d8",
+		"name": "Magisterka-app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25108028"
+	},
+	"item": [
+		{
+			"name": "A01:2021-Broken Access Control",
+			"item": [
+				{
+					"name": "Wrong ACL",
+					"item": [
+						{
+							"name": "Poprawny zakres dostepu tokena",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let responseData = pm.response.json();",
+											"",
+											"// Zapisuje access_token jako zmienną kolekcji",
+											"pm.collectionVariables.set(\"access_token\", responseData.access_token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\" : \"testuser@test.pl\",\n    \"password\" : \"testowanehaslo123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/loginWithCorrectScope",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"loginWithCorrectScope"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Niepoprawny zakres dostepu tokena",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let responseData = pm.response.json();",
+											"",
+											"// Zapisuje access_token jako zmienną kolekcji",
+											"pm.collectionVariables.set(\"access_token\", responseData.access_token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\" : \"testuser@test.pl\",\n    \"password\" : \"testowanehaslo123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/loginWithIncorrectScope",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"loginWithIncorrectScope"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Weryfikacja tokena",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/users/1",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"users",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "Po zalogowaniu sie w bazie można zobaczyć że w tabeli users kolumna abilities jest view lub \"\\*\""
+				}
+			]
+		},
+		{
+			"name": "A02:2021-Cryptographic Failures",
+			"item": [
+				{
+					"name": "Missing password hash",
+					"item": [],
+					"description": "Nie jestem w stanie zaprezentować zapisu hasła bez szyfrowania, ponieważ definiuje to się w Modelu użytkownika, aktualnie ustawione jest w nim szyfrowanie haseł podczas zapisu.\n\n<img src=\"https://content.pstmn.io/9660469f-7188-472e-8960-3e7c95c09c5c/aW1hZ2UucG5n\" alt=\"\" height=\"156\" width=\"1306\">"
+				}
+			]
+		},
+		{
+			"name": "A03:2021-Injection",
+			"item": [
+				{
+					"name": "XSS",
+					"item": [
+						{
+							"name": "Zabezpieczone",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "2|UalLQUu0eVmjAt3SiPIZBhDmDPaCTDnJPsdhPpUC57ce51af",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:8000/xss-zWalidacja?input=<script>alert('XSS')</script>",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"xss-zWalidacja"
+									],
+									"query": [
+										{
+											"key": "input",
+											"value": "<script>alert('XSS')</script>"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Niezabezpieczone",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8000/xss-bezWalidacji?input=<script>alert('XSS')</script>",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"xss-bezWalidacji"
+									],
+									"query": [
+										{
+											"key": "input",
+											"value": "<script>alert('XSS')</script>"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "Tę podatność również można przetestować za pomocą przeglądarki.\n\nZabezpieczone:\n\n[http://localhost:8000/xss-zWalidacja?input=alert('XSS')](http://localhost:8000/xss-zWalidacja?input=alert('XSS'))\n\nNiezabezpieczone:\n\nhttp://localhost:8000/xss-bezWalidacji?input=alert(&#x27;XSS&#x27;)"
+				},
+				{
+					"name": "SQLi",
+					"item": [
+						{
+							"name": "Zabezpieczone",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"' OR '1' = '1\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/getUserWithoutSQLI",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"getUserWithoutSQLI"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Niezabezpieczone",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"' OR '1' = '1\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/getUserWithSQLI",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"getUserWithSQLI"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "matt",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "A04:2021-Insecure Design",
+			"item": [
+				{
+					"name": "Open Redirect",
+					"item": [
+						{
+							"name": "Zabezpieczone",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\" : \"testuser@test.pl\",\n    \"password\" : \"testowanehaslo123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/CorrectloginWithRedirect?redirect_to=https://anstar.edu.pl/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"CorrectloginWithRedirect"
+									],
+									"query": [
+										{
+											"key": "redirect_to",
+											"value": "https://anstar.edu.pl/"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Niezabezpieczone",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\" : \"testuser@test.pl\",\n    \"password\" : \"testowanehaslo123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/IncorrectloginWithRedirect?redirect_to=https://anstar.edu.pl/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"IncorrectloginWithRedirect"
+									],
+									"query": [
+										{
+											"key": "redirect_to",
+											"value": "https://anstar.edu.pl/"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Login Rate Limiter",
+					"item": [
+						{
+							"name": "Logowanie z jednym zapytaniem na minutę",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\" : \"testuser@test.pl\",\n    \"password\" : \"testowanehaslo123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "A05:2021-Security Misconfiguration",
+			"item": [
+				{
+					"name": "Token no expire",
+					"item": [
+						{
+							"name": "Logowanie bez wygasającego tokena",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\" : \"testuser@test.pl\",\n    \"password\" : \"testowanehaslo123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/loginWithoutExpiresToken",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"loginWithoutExpiresToken"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Logowanie z wygasającym tokenem",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\" : \"testuser@test.pl\",\n    \"password\" : \"testowanehaslo123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/loginWithExpiresToken",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"loginWithExpiresToken"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "W celu weryfikacji podatności należy zalogować się do bazy danych i wejść w tabelę personal_access_tokens po wykonaniu jednego z dwóch requestów w folderze\n\nWygasający token:\n\n<img src=\"https://content.pstmn.io/1cc8e561-3aa2-4848-9873-4da808729860/aW1hZ2UucG5n\" width=\"1826\" height=\"108\">\n\nNiewygasający token:\n\n<img src=\"https://content.pstmn.io/50692d24-9071-471c-b948-a8a0de97e96b/aW1hZ2UucG5n\" width=\"1840\" height=\"110\">"
+				}
+			]
+		},
+		{
+			"name": "A06:2021-Vulnerable and Outdated Components",
+			"item": [],
+			"description": "W celu przetestowania podaności należy wejść w kontener PHP przez aplikację Docker desktop i następnie kliknąć w zakładkę EXEC i w folderze /app wpisać komendę composer audit\n\n<img src=\"https://content.pstmn.io/254c2f15-d81e-4843-8b69-08c94fee2e29/aW1hZ2UucG5n\" alt=\"\" height=\"240\" width=\"441\">"
+		},
+		{
+			"name": "A07:2021-Identification and Authentication Failures",
+			"item": [
+				{
+					"name": "Many access keys for one user",
+					"item": [
+						{
+							"name": "Poprawne / Jeden token do użytkownika",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\" : \"testuser@test.pl\",\n    \"password\" : \"testowanehaslo123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/loginWithOneToken",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"loginWithOneToken"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Niepoprawne / Kilka tokenów do jednego użytkownika",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\" : \"testuser@test.pl\",\n    \"password\" : \"testowanehaslo123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/loginWithManyToken",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"loginWithManyToken"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "W celu weryfikacji podatności należy zalogować się do bazy danych i wejść w tabelę personal_access_tokens po wykonaniu jednego z dwóch requestów w folderze\n\nPoprawne (jeden token)\n\n<img src=\"https://content.pstmn.io/8a907510-bb5c-44dd-b186-f52f53ead9af/aW1hZ2UucG5n\" alt=\"\" height=\"108\" width=\"1830\">\n\nNiepoprawne (kilka tokenów)\n\n<img src=\"https://content.pstmn.io/b14d71d9-5e08-42a0-8693-ad4a681de3a6/aW1hZ2UucG5n\" width=\"1842\" height=\"288\">"
+				}
+			]
+		},
+		{
+			"name": "A08:2021-Software and Data Integrity Failures",
+			"item": [],
+			"description": "Brak podatności w obecnej wersji Laravela (11.9)"
+		},
+		{
+			"name": "A09:2021-Security Logging and Monitoring Failrues",
+			"item": [
+				{
+					"name": "Sensitive data in Log",
+					"item": [
+						{
+							"name": "Poprawne rejestrowanie zdarzenia",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\" : \"testNameCorrectLog\",\n    \"email\" : \"testuser1@test.pl\",\n    \"password\" : \"testowanehaslo1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/registerWithCorrectLog",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"registerWithCorrectLog"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Niepoprawne rejestrowanie zdarzenia",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\" : \"testNameCorrectLog\",\n    \"email\" : \"testuser1@test.pl\",\n    \"password\" : \"testowanehaslo1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/registerWithIncorrectLog",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"registerWithIncorrectLog"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "W celu przetestowania podaności należy wejść w kontener PHP przez aplikację Docker desktop i następnie kliknąć w zakładkę EXEC i w folderze /storage/logs wpisać cat laravel.log"
+				}
+			]
+		},
+		{
+			"name": "A10:2021-Server-Side Request Forgery",
+			"item": [],
+			"description": "Brak podatności w obecnej wersji Laravela (11.9)"
+		},
+		{
+			"name": "Rejestracja użytkownika",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\" : \"TestUser\",\n    \"email\" : \"testuser@test.pl\",\n    \"password\" : \"testowanehaslo123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"register"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "access_token",
+			"value": ""
+		}
+	]
+}

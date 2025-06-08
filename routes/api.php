@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/loginWithCorrectScope', [AuthController::class, 'loginWithCorrectScope']);
-Route::post('/loginWithInccorectScope', [AuthController::class, 'loginWithInccorectScope']);
+Route::post('/loginWithIncorrectScope', [AuthController::class, 'loginWithInccorectScope']);
 Route::post('/loginWithoutExpiresToken', [AuthController::class, 'loginWithoutExpiresToken']);
 Route::post('/loginWithExpiresToken', [AuthController::class, 'loginWithExpiresToken']);
 Route::post('/loginWithOneToken', [AuthController::class, 'loginWithOneToken']);
 Route::post('/loginWithManyToken', [AuthController::class, 'loginWithManyToken']);
 Route::post('/registerWithCorrectLog', [AuthController::class, 'registerWithCorrectLog']);
-Route::post('/registerWithInccorectLog', [AuthController::class, 'registerWithInccorectLog']);
-
+Route::post('/registerWithIncorrectLog', [AuthController::class, 'registerWithInccorectLog']);
+Route::post('/register', [AuthController::class, 'register']);
 Route::post('/IncorrectloginWithRedirect', [UserController::class, 'IncorrectloginWithRedirect']);
 Route::post('/CorrectloginWithRedirect', [UserController::class, 'CorrectloginWithRedirect']);
 Route::middleware('auth:sanctum')->group(function () {

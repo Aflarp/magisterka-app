@@ -12,7 +12,50 @@ class AuthController extends Controller
     // Rejestracja użytkownika
     public function registerWithCorrectLog(Request $request)
     {
+        $user = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+        ]);
+
+        $user = new User([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+        ]);
+
+        \Illuminate\Support\Facades\Log::info('User created', [
+            'email' => $user->email,
+        ]);
+
+        return response()->json(['message' => 'User validated and logged successfully', 'user' => ['name' => $user->name, 'email' => $user->email]], 201);
+
+    }
+
+    public function registerWithInccorectLog(Request $request)
+    {
         $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+        ]);
+
+        $user = new User([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+        ]);
+
+        \Illuminate\Support\Facades\Log::info('User created', ["user" => $user]);
+        return response()->json(['message' => 'User validated and logged successfully', 'user' => $user], 201);
+        
+        //return response()->json(['message' => 'User registered successfully'], 201);
+    }
+
+
+    public function register(Request $request)
+    {
+        $user = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
@@ -25,35 +68,12 @@ class AuthController extends Controller
         ]);
 
         \Illuminate\Support\Facades\Log::info('User created', [
-            'user_name' => $user->name,
-            'email' => $user->email]);
-
-
-        //return response()->json(['message' => 'User registered successfully'], 201);
-        return response()->json(['message' => 'User registered successfully', 'user' => ['name' => $user->name, 'email' => $user->email]], 201);
-
-    }
-
-    public function registerWithInccorectLog(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'email' => $user->email,
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password,
-        ]);
+        return response()->json(['message' => 'User validated and logged successfully', 'user' => ['name' => $user->name, 'email' => $user->email]], 201);
 
-        \Illuminate\Support\Facades\Log::info('User created', ["user" => $user]);
-        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
-        
-        //return response()->json(['message' => 'User registered successfully'], 201);
     }
-
 
     // Logowanie użytkownika
 
