@@ -40,9 +40,9 @@ A postman collection is added to the repository, which should be imported to tes
 1. XSS  
    This vulnerability can also be tested in the browser by pasting 2 links  
    Secured:  
-   http://localhost:8000/xss-zWalidacja?input=alert('XSS')  
+   http://localhost:8000/xss-zWalidacja?input=<script>alert('XSS')</script>  
    Unsecored:  
-   http://localhost:8000/xss-bezWalidacji?input=alert('XSS')
+   http://localhost:8000/xss-bezWalidacji?input=<script>alert('XSS')</script>
 2. SQL Injection
    There are 2 endpoints in this folder.
 

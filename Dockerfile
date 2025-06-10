@@ -10,7 +10,7 @@ WORKDIR /app
 COPY . .
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN chmod +x script.sh
+RUN chmod +x script.sh wait-for.sh
 
 ENV PORT=8000
 # Uruchomienie skryptu startowego jako główną komendę kontenera
