@@ -22,6 +22,8 @@ The goal of the application is to raise awareness among developers and promote s
 
 A postman collection is added to the repository, which should be imported to test all vulnerabilities in the application. The most important step is to execute the request titled Rejestracja użytkowniika. This is needed to test the following vulnerabilities.
 
+If you want to login to database use this credentials
+root/root or appuser/apppass and port 3306
 ### A01:2021-Broken Access Control
 
 1. Wrong ACL  
@@ -40,17 +42,20 @@ A postman collection is added to the repository, which should be imported to tes
 1. XSS  
    This vulnerability can also be tested in the browser by pasting 2 links  
    Secured:  
-   http://localhost:8000/xss-zWalidacja?input=<script>alert('XSS')</script>  
+   http://localhost:8000/xss-zWalidacja?input=%3Cscript%3Ealert(%27XSS%27)%3C/script%3E
    Unsecored:  
-   http://localhost:8000/xss-bezWalidacji?input=<script>alert('XSS')</script>
+   http://localhost:8000/xss-bezWalidacji?input=%3Cscript%3Ealert(%27XSS%27)%3C/script%3E
 2. SQL Injection
    There are 2 endpoints in this folder.
 
 ### A04:2021-Insecure Design
 
 1. Open Redirect  
-   There are 2 endpoints in this folder.
-
+   To test it use postman collection or To test the vulnerability, run a terminal on your computer and paste the following command:  
+   curl -X POST “http://localhost:8000/api/IncorrectloginWithRedirect?redirect_to=https://anstar.edu.pl/” \ -H “Content-Type: application/x-www-form-urlencoded”. \ -d “email=testuser@test.pl&password=testowanehaslo123” \ -D - -o /dev/null
+   
+   and second command  
+   curl -X POST "http://localhost:8000/api/CorrectloginWithRedirect?redirect_to=https://anstar.edu.pl/" \ -H "Content-Type: application/x-www-form-urlencoded" \ -d "email=testuser@test.pl&password=testowanehaslo123" \ -D - -o /dev null  
 2. Login Rate Limiter  
    After sending first request you will get correct response, but if you send few more you will get response 429 too many requests
 
