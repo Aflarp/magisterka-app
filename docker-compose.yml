@@ -6,8 +6,8 @@ services:
             - 3306:3306
         environment:
             MYSQL_DATABASE: magisterka_app
-            MYSQL_USER: root
-            MYSQL_PASSWORD: root
+            MYSQL_USER: appuser
+            MYSQL_PASSWORD: apppass
             MYSQL_ROOT_PASSWORD: root
         volumes:
             - magisterka-volume:/var/lib/mysql
@@ -24,8 +24,8 @@ services:
             DB_HOST: magisterka_app_db
             DB_PORT: 3306
             DB_DATABASE: magisterka_app
-            DB_USERNAME: root
-            DB_PASSWORD: root
+            DB_USERNAME: appuser
+            DB_PASSWORD: apppass
         depends_on:
             - database
         networks:

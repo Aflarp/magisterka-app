@@ -67,11 +67,8 @@ class AuthController extends Controller
             'password' => $request->password,
         ]);
 
-        \Illuminate\Support\Facades\Log::info('User created', [
-            'email' => $user->email,
-        ]);
 
-        return response()->json(['message' => 'User validated and logged successfully', 'user' => ['name' => $user->name, 'email' => $user->email]], 201);
+        return response()->json(['message' => 'User registered', 'user' => ['name' => $user->name, 'email' => $user->email]], 201);
 
     }
 

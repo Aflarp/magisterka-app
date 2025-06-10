@@ -68,13 +68,28 @@ class UserController extends Controller
 
     public function CorrectloginWithRedirect(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+       $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
-            return redirect()->intended('https://www.ur.edu.pl/pl/strona-glowna');
-        }    
+    if (Auth::attempt($credentials)) {
+        $redirectTo = $request->input('redirect_to');
 
-        return back()->withErrors(['email' => 'Nieprawidłowe dane logowania.']);
+        $trustedDomains = [
+            'https://www.ur.edu.pl',
+            'https://student.ur.edu.pl',
+        ];
+
+        if ($redirectTo) {
+            foreach ($trustedDomains as $trusted) {
+                if (str_starts_with($redirectTo, $trusted)) {
+                    return redirect()->away($redirectTo);
+                }
+            }
+        }
+
+        return redirect()->away('https://www.ur.edu.pl/pl/strona-glowna');
+    }
+
+    return back()->withErrors(['email' => 'Nieprawidłowe dane logowania.']);
     }
 }
 
