@@ -10,7 +10,7 @@ services:
             MYSQL_PASSWORD: apppass
             MYSQL_ROOT_PASSWORD: root
         volumes:
-            - magisterka-volume:/var/lib/mysql
+            - ./magisterka-volume:/var/lib/mysql
         networks:
             - magisterka-network
     php:
@@ -30,8 +30,6 @@ services:
             - database
         networks:
             - magisterka-network
-volumes:
-    magisterka-volume:
 
 networks:
     magisterka-network:
